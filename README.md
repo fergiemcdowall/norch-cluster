@@ -1,2 +1,2 @@
 # norch-cluster
-Norch-cluster is a distributed search engine
+Norch-cluster is coming...

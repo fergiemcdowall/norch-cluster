@@ -1,0 +1,36 @@
+{
+  "name": "norch-cluster",
+  "version": "0.0.1",
+  "description": "A distributed search engine",
+  "main": "./lib/norch-cluster.js",
+  "scripts": {
+    "test": "rm -rf test/sandbox && mkdir test/sandbox && mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fergiemcdowall/norch-cluster.git"
+  },
+  "dependencies": {
+    "lodash": "3.10.1"
+  },
+  "devDependencies": {
+    "should": "7.1.0",
+    "mocha": "2.3.0",
+    "supertest": "1.1.0",
+    "norch": "0.6.5",
+    "async": "1.4.2"
+  },
+  "keywords": [
+    "norch",
+    "distributed",
+    "search",
+    "engine",
+    "search-engine"
+  ],
+  "author": "Fergus McDowall",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fergiemcdowall/norch-cluster/issues"
+  },
+  "homepage": "https://github.com/fergiemcdowall/norch-cluster"
+}
