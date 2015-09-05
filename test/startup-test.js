@@ -19,7 +19,7 @@ async.whilst(
       indexPath: sandbox + '/norch-node-' + i,
       port: portnr
     }, function() {
-      var url = 'localhost:' + portnr;
+      var url = 'http://localhost:' + portnr;
       nodeURLs.push(url);
       superRequests[i] = supertest(url);
       callback();
@@ -42,7 +42,8 @@ describe('Am I A Happy Norch-Cluster?', function() {
         superRequests[i].get('/tellMeAboutMyNorch').expect(200).end(function(err, res) {
           if (err) throw err;
           should.exist(res);
-          should.exist(JSON.parse(res.text).options.port, 3030 + i);
+          should.exist(JSON.parse(res.text).options.port);
+          (JSON.parse(res.text).options.port).should.be.exactly(3030 + i)
           callback();
         });
       },
@@ -57,10 +58,27 @@ describe('Am I A Happy Norch-Cluster?', function() {
     nc = new NorchCluster({
       nodes: nodeURLs
     })
-    nc.add(batch, function (err, result) {
-
-    })
-    done();
+    nc.status(batch, function (err, result) {
+//      console.log(result)
+      result.should.eql(
+        [ { hostname: '0.0.0.0',
+            port: 3035,
+            indexPath: 'test/sandbox/norch-node-5' },
+          { hostname: '0.0.0.0',
+            port: 3034,
+            indexPath: 'test/sandbox/norch-node-4' },
+          { hostname: '0.0.0.0',
+            port: 3033,
+            indexPath: 'test/sandbox/norch-node-3' },
+          { hostname: '0.0.0.0',
+            port: 3032,
+            indexPath: 'test/sandbox/norch-node-2' },
+          { hostname: '0.0.0.0',
+            port: 3031,
+            indexPath: 'test/sandbox/norch-node-1' } ]
+      );
+      done();
+    });
   });  
 
 });
