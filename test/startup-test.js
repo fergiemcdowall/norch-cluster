@@ -1,12 +1,14 @@
+var Norch = require('norch');
 var async = require('async');
+var NorchCluster = require('../');
+var nc;
+var nodeURLs = [];
 var norchNodes = [];
-var superRequests = [];
 var numberOfNodes = 5;
 var sandbox = 'test/sandbox';
 var should = require('should'); 
+var superRequests = [];
 var supertest = require('supertest');
-var Norch = require('norch');
-
 
 var i = 0;
 async.whilst(
@@ -17,7 +19,9 @@ async.whilst(
       indexPath: sandbox + '/norch-node-' + i,
       port: portnr
     }, function() {
-      superRequests[i] = supertest('localhost:' + portnr);
+      var url = 'localhost:' + portnr;
+      nodeURLs.push(url);
+      superRequests[i] = supertest(url);
       callback();
     });
   },
@@ -35,8 +39,10 @@ describe('Am I A Happy Norch-Cluster?', function() {
         return  (++i <= numberOfNodes);
       },
       function (callback) {
-        superRequests[i].get('/').expect(200).end(function(err, res) {
+        superRequests[i].get('/tellMeAboutMyNorch').expect(200).end(function(err, res) {
           if (err) throw err;
+          should.exist(res);
+          should.exist(JSON.parse(res.text).options.port, 3030 + i);
           callback();
         });
       },
@@ -46,4 +52,17 @@ describe('Am I A Happy Norch-Cluster?', function() {
     );
   });
 
+  it('should initialize the cluster with the nodes', function(done) {
+    var batch = require('../node_modules/reuters-21578-json/data/justTen/justTen.json')
+    nc = new NorchCluster({
+      nodes: nodeURLs
+    })
+    nc.add(batch, function (err, result) {
+
+    })
+    done();
+  });  
+
 });
+
+
