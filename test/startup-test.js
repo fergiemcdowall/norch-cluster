@@ -54,11 +54,10 @@ describe('Am I A Happy Norch-Cluster?', function() {
   });
 
   it('should initialize the cluster with the nodes', function(done) {
-    var batch = require('../node_modules/reuters-21578-json/data/justTen/justTen.json')
     nc = new NorchCluster({
       nodes: nodeURLs
     })
-    nc.status(batch, function (err, result) {
+    nc.status(function (err, result) {
 //      console.log(result)
       result.should.eql(
         [ { hostname: '0.0.0.0',
@@ -80,6 +79,13 @@ describe('Am I A Happy Norch-Cluster?', function() {
       done();
     });
   });  
+
+  it('should index some data', function(done) {
+    var batch = require('../node_modules/reuters-21578-json/data/justTen/justTen.json')
+    nc.add(batch, function(err, result) {
+      done();
+    });
+  })
 
 });
 
