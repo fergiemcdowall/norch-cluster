@@ -58,23 +58,23 @@ describe('Am I A Happy Norch-Cluster?', function() {
       nodes: nodeURLs
     })
     nc.status(function (err, result) {
-//      console.log(result)
+      console.log(result)
       result.should.eql(
         [ { hostname: '0.0.0.0',
-            port: 3035,
-            indexPath: 'test/sandbox/norch-node-5' },
-          { hostname: '0.0.0.0',
-            port: 3034,
-            indexPath: 'test/sandbox/norch-node-4' },
-          { hostname: '0.0.0.0',
-            port: 3033,
-            indexPath: 'test/sandbox/norch-node-3' },
+            port: 3031,
+            indexPath: 'test/sandbox/norch-node-1' },
           { hostname: '0.0.0.0',
             port: 3032,
             indexPath: 'test/sandbox/norch-node-2' },
           { hostname: '0.0.0.0',
-            port: 3031,
-            indexPath: 'test/sandbox/norch-node-1' } ]
+            port: 3033,
+            indexPath: 'test/sandbox/norch-node-3' },
+          { hostname: '0.0.0.0',
+            port: 3034,
+            indexPath: 'test/sandbox/norch-node-4' },
+          { hostname: '0.0.0.0',
+            port: 3035,
+            indexPath: 'test/sandbox/norch-node-5' } ]
       );
       done();
     });
@@ -83,10 +83,13 @@ describe('Am I A Happy Norch-Cluster?', function() {
   it('should index some data', function(done) {
     var batch = require('../node_modules/reuters-21578-json/data/justTen/justTen.json')
     nc.add(batch, function(err, result) {
+      result.should.eql([ { node: 'http://localhost:3031', response: 'Batch indexed' },
+                          { node: 'http://localhost:3032', response: 'Batch indexed' },
+                          { node: 'http://localhost:3033', response: 'Batch indexed' },
+                          { node: 'http://localhost:3034', response: 'Batch indexed' },
+                          { node: 'http://localhost:3035', response: 'Batch indexed' } ]);
       done();
     });
   })
 
 });
-
-

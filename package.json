@@ -4,7 +4,7 @@
   "description": "A distributed search engine",
   "main": "./lib/norch-cluster.js",
   "scripts": {
-    "test": "rm -rf test/sandbox && mkdir test/sandbox && mocha"
+    "test": "rm -rf test/sandbox && mkdir -p test/sandbox && mocha"
   },
   "repository": {
     "type": "git",
@@ -19,7 +19,7 @@
     "should": "7.1.0",
     "mocha": "2.3.0",
     "supertest": "1.1.0",
-    "norch": "0.6.7",
+    "norch": "0.6.8",
     "async": "1.4.2",
     "reuters-21578-json":"0.0.6"
   },
