@@ -9,28 +9,33 @@ var sandbox = 'test/sandbox';
 var should = require('should'); 
 var superRequests = [];
 var supertest = require('supertest');
-
-var i = 0;
-async.whilst(
-  function () {return (++i <= numberOfNodes)},
-  function (callback) {
-    var portnr = 3030 + i;
-    norchNodes[i] = new Norch({
-      indexPath: sandbox + '/norch-node-' + i,
-      port: portnr
-    }, function() {
-      var url = 'http://localhost:' + portnr;
-      nodeURLs.push(url);
-      superRequests[i] = supertest(url);
-      callback();
-    });
-  },
-  function (err) {}
-);
+var _ = require('lodash');
 
 
 
 describe('Am I A Happy Norch-Cluster?', function() {
+
+  before(function() {
+    //Spin up some "remote" norches
+    var i = 0;
+    async.whilst(
+      function () {return (++i <= numberOfNodes)},
+      function (callback) {
+        var portnr = 3030 + i;
+        norchNodes[i] = new Norch({
+          indexPath: sandbox + '/norch-node-' + i,
+          port: portnr
+        }, function() {
+          var url = 'http://localhost:' + portnr;
+          nodeURLs.push(url);
+          superRequests[i] = supertest(url);
+          callback();
+        });
+      },
+      function (err) {}
+    );
+  });
+
 
   it('should verify nodes', function(done) {
     var i = 0;
@@ -58,7 +63,7 @@ describe('Am I A Happy Norch-Cluster?', function() {
       nodes: nodeURLs
     })
     nc.status(function (err, result) {
-      console.log(result)
+//      console.log(result)
       result.should.eql(
         [ { hostname: '0.0.0.0',
             port: 3031,
@@ -90,6 +95,22 @@ describe('Am I A Happy Norch-Cluster?', function() {
                           { node: 'http://localhost:3035', response: 'Batch indexed' } ]);
       done();
     });
-  })
+  });
+
+
+  it('should do a search', function(done) {
+    var q = {};
+    q.query = {'*': ['reuter', '1987']};
+    q.pageSize = 5;
+    nc.search(q, function(err, result) {
+//      console.log(result);
+      result.query.should.eql(q);
+      result.hits.length.should.be.exactly(5);
+      result.totalHits.should.be.exactly(10);
+      _.pluck(result.hits, 'id').should.eql([ '5', '10', '4', '6', '1' ]);
+      done();
+    });
+  });
+
 
 });
