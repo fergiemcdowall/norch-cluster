@@ -102,7 +102,6 @@ describe('Am I A Happy Norch-Cluster?', function() {
     q.query = {'*': ['reuter', '1987']};
     q.pageSize = 5;
     nc.search(q, function(err, result) {
-      console.log(result)
       result.query.should.eql(q);
       result.hits.length.should.be.exactly(5);
       result.totalHits.should.be.exactly(10);
